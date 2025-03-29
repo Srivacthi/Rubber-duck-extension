@@ -25,12 +25,19 @@ function activate(context) {
 	});
 
 	context.subscriptions.push(disposable);
+	context.subscriptions.push(vscode.commands.registerCommand('rubber-ducky.speak', speak));
 }
 
+
+function speak(){
+	console.log('hi');
+	vscode.window.showInformationMessage('Spoke!');
+}
 // This method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
 	activate,
-	deactivate
+	deactivate,
+	speak
 }

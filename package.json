@@ -15,7 +15,12 @@
     "commands": [{
       "command": "rubber-ducky.helloWorld",
       "title": "Hello World"
-    }]
+    },
+    {
+      "command": "rubber-ducky.speak",
+      "title": "Speak"
+    }
+  ]
   },
   "scripts": {
     "lint": "eslint .",
