@@ -15,7 +15,7 @@ def text_to_speech(text):
 
 def speech_to_text(): #returns your question to text
     r = sr.Recognizer()
-    with sr.Microphone(device_index=1) as source:
+    with sr.Microphone(device_index=0) as source:
         print("Listening...")
         # reducing background noice
         r.adjust_for_ambient_noise(source)
@@ -68,7 +68,8 @@ def main():
     chat_with_history.clear()
     print("What is your question? Say 'quit' to quit.")
     question = speech_to_text()
-    while (question.lower()!="quit"):
+    
+    while (question is not None and question.lower()!="quit"):
         add_to_txt("User: " + question)
         #password = "7TahlSkPE0uZdAT6"
         context = chat_with_history.messages

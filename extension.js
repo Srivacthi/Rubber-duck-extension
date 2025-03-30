@@ -27,23 +27,23 @@ function activate(context) {
 	);
 
 	// Register the Python Execution Command
-	const pythonDisposable = vscode.commands.registerCommand("extension.runPython", () => {
+	const pythonDisposable = vscode.commands.registerCommand("rubber-ducky.runPython", () => {
 		vscode.window.showInformationMessage("Running Python Script...");
 
 		// Path to your Python script (ensure it's in the extension directory)
 		let pythonScript = `"${__dirname}/text_to_speech.py"`;
 
 		// Execute Python script
-		exec(`python ${pythonScript}`, (error, stdout, stderr) => {
+		exec(`python3 ${pythonScript}`, (error, stdout, stderr) => {
+			console.log(`Python Output: ${stdout}`);
 			if (error) {
-				vscode.window.showErrorMessage(`Error: ${error.message}`);
+				console.log(`Error: ${error.message}`);
 				return;
 			}
 			if (stderr) {
-				vscode.window.showErrorMessage(`Python Error: ${stderr}`);
+				console.log(`Python Error: ${stderr}`);
 				return;
 			}
-			vscode.window.showInformationMessage(`Python Output: ${stdout}`);
 		});
 	});
 	context.subscriptions.push(pythonDisposable);
@@ -105,8 +105,6 @@ class RubberDuckyWebviewViewProvider {
 	getWebviewContent(webview){
 		const water1Gif = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', '1_water.gif'));
 		const duckGif = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', this.duckGif));
-		console.log('Water GIF URI:', water1Gif.toString());
-		console.log('Duck GIF URI:', duckGif.toString());	
 		return `
 			<!DOCTYPE html>
 			<html lang="en">
