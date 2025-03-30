@@ -23,6 +23,10 @@ function activate(context) {
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from Rubber Ducky!');
 	});
+	const webviewProvider = new RubberDuckyWebviewViewProvider(context);
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider('rubberDuckyView', webviewProvider)
+	);
 
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(vscode.commands.registerCommand('rubber-ducky.speak', speak));
@@ -32,6 +36,7 @@ function activate(context) {
 function speak(){
 	console.log('hi');
 	vscode.window.showInformationMessage('Spoke!');
+
 }
 // This method is called when your extension is deactivated
 function deactivate() {}
@@ -40,4 +45,61 @@ module.exports = {
 	activate,
 	deactivate,
 	speak
+}
+
+class RubberDuckyWebviewViewProvider {
+	/**
+	 * @param {vscode.ExtensionContext} context
+	 */
+	constructor(context) {
+		this.context = context;
+	}
+
+	resolveWebviewView(webviewView) {
+		this.webviewView = webviewView;
+		webviewView.webview.options = {
+			enableScripts: true,
+			localResourceRoots: [ vscode.Uri.joinPath(this.context.extensionUri, 'media')]
+		};
+
+		webviewView.webview.html = this.getWebviewContent(webviewView.webview);
+	}
+
+	getWebviewContent(webview){
+		const water1Gif = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', '1_water.gif'));
+		const duckGif = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', 'duck_default.gif'));
+		console.log('Water GIF URI:', water1Gif.toString());
+		console.log('Duck GIF URI:', duckGif.toString());	
+		return `
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Rubber Ducky</title>
+				<style>
+					body {
+						margin: 0;
+						overflow: hidden;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						height: 100vh;
+						background: url('${water1Gif}') no-repeat center center;
+						background-size: cover;
+					}
+					#duck {
+						position: absolute;
+						bottom: 5px; /* moves duck */
+						width: 80px;
+						height: auto;
+					}
+				</style>
+			</head>
+			<body>
+				<img id="duck" src="${duckGif}" alt="Rubber Ducky">
+			</body>
+			</html>
+		`;
+	}
 }
