@@ -19,6 +19,10 @@
     {
       "command": "rubber-ducky.speak",
       "title": "Speak"
+    },
+    {
+      "command": "extension.runPython",
+      "title": "Run python script"
     }
   ],
     "views": {

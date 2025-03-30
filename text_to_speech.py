@@ -5,7 +5,6 @@ import requests
 import json
 import time
 from langchain_mongodb.chat_message_histories import MongoDBChatMessageHistory
-from playsound import playsound
 
 TXT_FILE = "conversation_history.txt"
 
@@ -92,3 +91,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+print("Hello from Python!")
