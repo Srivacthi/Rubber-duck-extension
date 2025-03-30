@@ -83,10 +83,10 @@ class RubberDuckyWebviewViewProvider {
 						overflow: hidden;
 						display: flex;
 						justify-content: center;
-						align-items: center;
+						align-items: flex-end; /* Align content to the bottom */
 						height: 100vh;
-						background: url('${water1Gif}') no-repeat center center;
-						background-size: cover;
+						background: url('${water1Gif}') no-repeat bottom center;
+						background-size: 100% auto; /* Ensure width is always 100% but height adjusts */
 					}
 					#duck {
 						position: absolute;
