@@ -1,0 +1,24 @@
+User: I think hexadecimal is a 16 digits
+AI response: You're on the right track! Hexadecimal is base-16. How many digits does that use?
+
+User: what do you mean I just said 16 digits is that correct
+AI response: You're getting closer. Hexadecimal is base-16. Does that mean it uses *exactly* 16 digits? Think about base-10 (decimal) - it's base-10, but the digits go from 0 to 9.
+
+User: yes because the digits go from 0 to
+AI response: So if decimal goes from 0 to 9, what is the highest number that hexadecimal digits go to?
+
+User: the letter
+AI response: What is the highest number when using hexadecimal?
+
+User: as in fish
+AI response: The prompt is asking you to consider the range of digits in hexadecimal (base-16). You've already recognized the digits include letters. What letter represents the highest value?
+
+User: the letter f as in fish
+AI response: What is the numerical value of the letter "f" in hexadecimal? Remember that 'a' represents 10.
+
+User: the Earth represents
+AI response: What number does 'f' represent if 'a' represents 10?
+
+User: PS represents 15
+AI response: 'a' represents 10, so what does 'f' represent?
+
