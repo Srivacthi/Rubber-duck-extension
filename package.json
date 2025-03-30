@@ -12,25 +12,36 @@
   "activationEvents": [],
   "main": "./extension.js",
   "contributes": {
-    "commands": [{
-      "command": "rubber-ducky.helloWorld",
-      "title": "Hello World"
-    },
+    "commands": [
     {
-      "command": "rubber-ducky.speak",
-      "title": "Speak"
-    },
-    {
-      "command": "extension.runPython",
+      "command": "rubber-ducky.runPython",
       "title": "Run python script"
+    },
+    {
+      "command": "rubber-ducky.changeDuck",
+      "title": "Change Duck",
+      "icon": {
+                  "dark": "media/icon/dark-add.svg",
+                  "light": "media/icon/light-add.svg"
+              }
     }
-  ],
+    ],
     "views": {
       "explorer": [
         {
           "type": "webview",
           "id": "rubberDuckyView",
           "name": "Rubber Ducky"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "rubber-ducky.changeDuck",
+          "when": "view == rubberDuckyView",
+          "group": "navigation@1",
+          "icon": "$(chevron-right)"
         }
       ]
     }

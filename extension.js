@@ -3,31 +3,28 @@
 const vscode = require('vscode');
 const { exec } = require("child_process");
 
+const ALL_DUCKS = [
+	{ label: 'Default Duck', description: 'duck_default.gif' },
+    { label: 'Zombie Duck', description: 'duck_zombie.gif' },
+    { label: 'Cowboy Duck', description: 'duck_cowboy.gif' },
+    { label: 'Flower Duck', description: 'duck_flower.gif' },
+    { label: 'Sombrero Duck', description: 'duck_sombrero.gif' },
+    { label: 'Wizard Duck', description: 'duck_wizard.gif' }
+]
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
+
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "rubber-ducky" is now active!');
-
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	const helloDisposable = vscode.commands.registerCommand('rubber-ducky.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Rubber Ducky!');
-	});
+	// create window
 	const webviewProvider = new RubberDuckyWebviewViewProvider(context);
-
-	context.subscriptions.push(vscode.window.registerWebviewViewProvider('rubberDuckyView', webviewProvider));
-	context.subscriptions.push(vscode.commands.registerCommand("rubber-ducky.speak", speak));
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider('rubberDuckyView', webviewProvider)
+	);
 
 	// Register the Python Execution Command
 	const pythonDisposable = vscode.commands.registerCommand("extension.runPython", () => {
@@ -49,22 +46,33 @@ function activate(context) {
 			vscode.window.showInformationMessage(`Python Output: ${stdout}`);
 		});
 	});
-	context.subscriptions.push(helloDisposable, pythonDisposable);
+	context.subscriptions.push(pythonDisposable);
+
+	const changeDuckCommand = vscode.commands.registerCommand('rubber-ducky.changeDuck', async () => {
+		const selectedDuck = await vscode.window.showQuickPick(ALL_DUCKS.map(duck => ({
+            label: duck.label,
+            description: duck.description
+        })), { 
+			placeHolder: 'Select a duck'
+		});
+		if (selectedDuck === undefined) {
+			console.log('Cancelling duck selection');
+			return;
+		}
+		const selectedDuckGif = selectedDuck.description;
+        if (webviewProvider && webviewProvider.webviewView) {
+            webviewProvider.updateDuckGif(selectedDuckGif);
+        }
+    });
+	context.subscriptions.push(changeDuckCommand);
 }
 
-
-function speak(){
-	console.log('hi');
-	vscode.window.showInformationMessage('Spoke!');
-
-}
 // This method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
 	activate,
-	deactivate,
-	speak
+	deactivate
 }
 
 class RubberDuckyWebviewViewProvider {
@@ -73,6 +81,7 @@ class RubberDuckyWebviewViewProvider {
 	 */
 	constructor(context) {
 		this.context = context;
+		this.duckGif = 'duck_default.gif';
 	}
 
 	resolveWebviewView(webviewView) {
@@ -85,15 +94,17 @@ class RubberDuckyWebviewViewProvider {
 
 		// Listen for messages from Webview
 		webviewView.webview.onDidReceiveMessage(message => {
-			if (message.command === "runPython") {
-				vscode.commands.executeCommand("extension.runPython");
+			switch(message.command) {
+				case 'runPython':
+					vscode.commands.executeCommand("rubber-ducky.runPython");
+					return;
 			}
 		});
 	}
 
 	getWebviewContent(webview){
 		const water1Gif = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', '1_water.gif'));
-		const duckGif = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', 'duck_default.gif'));
+		const duckGif = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', this.duckGif));
 		console.log('Water GIF URI:', water1Gif.toString());
 		console.log('Duck GIF URI:', duckGif.toString());	
 		return `
@@ -134,5 +145,11 @@ class RubberDuckyWebviewViewProvider {
 			</body>
 			</html>
 		`;
+	}
+	updateDuckGif(newGif) {
+		this.duckGif = newGif;
+		if (this.webviewView && this.webviewView.webview) {
+			this.webviewView.webview.html = this.getWebviewContent(this.webviewView.webview);
+		}
 	}
 }
